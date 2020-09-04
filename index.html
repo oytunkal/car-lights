@@ -48,7 +48,7 @@
                 <!-- Custom light 01 | Ambient -->
                 <a-entity
                   light="type: ambient;
-                  intensity: 0;">
+                  intensity: 0.1;">
                 </a-entity>
 
                 <!-- Custom light 02.1 | Directional sağ-->
@@ -79,26 +79,54 @@
                   intensity: 1;"
                   position="-1 0.3 0">
                 </a-entity>
+                
+                <!-- Custom light 03.2 | Point sol uzak-->
+                <a-entity
+                  light="type: point;
+                  intensity: 1.5;"
+                  position="-2.7 0.3 0">
+                </a-entity>
 
                 <!-- Custom light 04 | Point sağ-->
                 <a-entity
                   light="type: point;
-                  intensity: 1;"
+                  intensity: 1.5;"
                   position="0.9 0.4 0">
+                </a-entity>
+                
+                <!-- Custom light 04 | Point sağ uzak-->
+                <a-entity
+                  light="type: point;
+                  intensity: 1.5;"
+                  position="2.3 0.4 0">
                 </a-entity>
                 
                 <!-- Custom light 05 | Point ön-->
                 <a-entity
                   light="type: point;
-                  intensity: 1;"
+                  intensity: 1.5;"
                   position="0 0.4 -1">
                 </a-entity>
                 
-                <!-- Custom light 06 | Point arka -->
+                <!-- Custom light 05 | Point ön uzak-->
                 <a-entity
                   light="type: point;
-                  intensity: 1;"                   
+                  intensity: 1.5;"
+                  position="0 0.4 -3">
+                </a-entity>
+                
+                 <!-- Custom light 06 | Point arka-->
+                <a-entity
+                  light="type: point;
+                  intensity: 1.5;"                   
                   position="0 0.4 1.1">
+                </a-entity>
+                
+                <!-- Custom light 06 | Point arka uzak -->
+                <a-entity
+                  light="type: point;
+                  intensity: 1.5;"                   
+                  position="0 0.4 3.3">
                 </a-entity>
                 
             </a-marker>
