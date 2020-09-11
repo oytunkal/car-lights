@@ -1,152 +1,192 @@
 <!DOCTYPE html>
 <html>
+  <meta
+    name="viewport"
+    content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+  />
   <head>
-    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-detector.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-handler.js"></script>
+    <!-- three.js library -->
+    <script src="vendor/three.js/build/three.min.js"></script>
+    <!-- ar.js -->
+    <script src="../build/ar.js"></script>
+    <script>
+      THREEx.ArToolkitContext.baseURL = "../";
+    </script>
   </head>
 
-  <body style="margin: 0; overflow: hidden;">
-    <a-scene
-      vr-mode-ui="enabled: false;"
-      loading-screen="enabled: false;"
-      renderer="logarithmicDepthBuffer: true;"
-      arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
-      id="scene"
-      embedded
-      gesture-detector
-      shadow="type: pcfsoft"
+  <body style="margin : 0px; overflow: hidden; font-family: Monospace;">
+    <div
+      style="position: absolute; top: 10px; width:100%; text-align: center; z-index: 1;"
     >
-      <a-assets>
-        <a-asset-item id="animated-asset" src="assets/asset.glb"></a-asset-item>
-      </a-assets>
-
-      <a-marker-camera
-        id="animated-marker"
-        type="pattern"
-        preset="custom"
-        url="assets/marker.patt"
-        raycaster="objects: .clickable"
-        emitevents="true"
-        cursor="fuse: false; rayOrigin: mouse;"
-        id="markerA"
+      <a href="https://github.com/jeromeetienne/AR.js/" target="_blank"
+        >AR.js</a
       >
-        <a-entity
-          id="bowser-model"
-          scale="0.23532157304672438 0.23532157304672438 0.23532157304672438"
-          animation-mixer="loop: repeat"
-          gltf-model="#animated-asset"
-          class="clickable"
-          gesture-handler
-        ></a-entity>
+      - three.js camera transform
+      <br />
+      Contact me any time at
+      <a href="https://twitter.com/jerome_etienne" target="_blank"
+        >@jerome_etienne</a
+      >
+    </div>
+    <script>
+      //////////////////////////////////////////////////////////////////////////////////
+      //		Init
+      //////////////////////////////////////////////////////////////////////////////////
 
-        <!-- Custom light 01 | Ambient -->
-        <a-entity
-          light="type: ambient;
-                  intensity: 1;"
-        >
-        </a-entity>
+      // init renderer
+      var renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true
+      });
+      renderer.setClearColor(new THREE.Color("lightgrey"), 0);
+      renderer.setSize(640, 480);
+      renderer.domElement.style.position = "absolute";
+      renderer.domElement.style.top = "0px";
+      renderer.domElement.style.left = "0px";
+      document.body.appendChild(renderer.domElement);
 
-        <!-- Custom light 02.1 | Directional sağ-->
-        <a-entity
-          light="type: directional;
-                  intensity: 1;"
-          position="2 1 0"
-        >
-        </a-entity>
+      // array of functions for the rendering loop
+      var onRenderFcts = [];
 
-        <!-- Custom light 02.2 | Directional sol-->
-        <a-entity
-          light="type: directional;
-                  intensity: 1;"
-          position="-2 1 0"
-        >
-        </a-entity>
+      // init scene and camera
+      var scene = new THREE.Scene();
 
-        <!-- Custom light 02.3 | Directional üst-->
-        <a-entity
-          light="type: directional;
-                  intensity: 1;"
-          position="0.2 1.65 -1.65"
-          rotation="45 0 0"
-        >
-        </a-entity>
+      //////////////////////////////////////////////////////////////////////////////////
+      //		Initialize a basic camera
+      //////////////////////////////////////////////////////////////////////////////////
 
-        <!-- Custom light 02.3 | Directional üst uzak-->
-        <a-entity
-          light="type: directional;
-                  intensity: 1;"
-          position="0.2 0.6 -3"
-          rotation="45 0 0"
-        >
-        </a-entity>
+      // Create a camera
+      var camera = new THREE.Camera();
+      scene.add(camera);
 
-        <!-- Custom light 03 | Point sol-->
-        <a-entity
-          light="type: point;
-                  intensity: 1;"
-          position="-1 0.3 0"
-        >
-        </a-entity>
+      ////////////////////////////////////////////////////////////////////////////////
+      //          handle arToolkitSource
+      ////////////////////////////////////////////////////////////////////////////////
 
-        <!-- Custom light 03.2 | Point sol uzak-->
-        <a-entity
-          light="type: point;
-                  intensity: 1;"
-          position="-2.7 0.3 0"
-        >
-        </a-entity>
+      var arToolkitSource = new THREEx.ArToolkitSource({
+        // to read from the webcam
+        sourceType: "webcam"
 
-        <!-- Custom light 04 | Point sağ-->
-        <a-entity
-          light="type: point;
-                  intensity: 1;"
-          position="0.9 0.4 0"
-        >
-        </a-entity>
+        // // to read from an image
+        // sourceType : 'image',
+        // sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/images/img.jpg',
 
-        <!-- Custom light 04 | Point sağ uzak-->
-        <a-entity
-          light="type: point;
-                  intensity: 1;"
-          position="2.3 0.4 0"
-        >
-        </a-entity>
+        // to read from a video
+        // sourceType : 'video',
+        // sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/videos/headtracking.mp4',
+      });
 
-        <!-- Custom light 05 | Point ön-->
-        <a-entity
-          light="type: point;
-                  intensity: 1;"
-          position="0 0.4 -1"
-        >
-        </a-entity>
+      arToolkitSource.init(function onReady() {
+        onResize();
+      });
 
-        <!-- Custom light 05 | Point ön uzak-->
-        <a-entity
-          light="type: point;
-                  intensity: 1;"
-          position="0 0.4 -3"
-        >
-        </a-entity>
+      // handle resize
+      window.addEventListener("resize", function() {
+        onResize();
+      });
+      function onResize() {
+        arToolkitSource.onResizeElement();
+        arToolkitSource.copyElementSizeTo(renderer.domElement);
+        if (arToolkitContext.arController !== null) {
+          arToolkitSource.copyElementSizeTo(
+            arToolkitContext.arController.canvas
+          );
+        }
+      }
+      ////////////////////////////////////////////////////////////////////////////////
+      //          initialize arToolkitContext
+      ////////////////////////////////////////////////////////////////////////////////
 
-        <!-- Custom light 06 | Point arka-->
-        <a-entity
-          light="type: point;
-                  intensity: 1;"
-          position="0 0.4 1.1"
-        >
-        </a-entity>
+      // create atToolkitContext
+      var arToolkitContext = new THREEx.ArToolkitContext({
+        cameraParametersUrl:
+          THREEx.ArToolkitContext.baseURL + "assets/camera_para.dat",
+        detectionMode: "mono"
+      });
+      // initialize it
+      arToolkitContext.init(function onCompleted() {
+        // copy projection matrix to camera
+        camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+      });
 
-        <!-- Custom light 06 | Point arka uzak -->
-        <a-entity
-          light="type: point;
-                  intensity: 1;"
-          position="0 0.4 3.3"
-        >
-        </a-entity>
-      </a-marker-camera>
-    </a-scene>
+      // update artoolkit on every frame
+      onRenderFcts.push(function() {
+        if (arToolkitSource.ready === false) return;
+
+        arToolkitContext.update(arToolkitSource.domElement);
+
+        // update scene.visible if the marker is seen
+        scene.visible = camera.visible;
+      });
+
+      ////////////////////////////////////////////////////////////////////////////////
+      //          Create a ArMarkerControls
+      ////////////////////////////////////////////////////////////////////////////////
+
+      // init controls for camera
+      var markerControls = new THREEx.ArMarkerControls(
+        arToolkitContext,
+        camera,
+        {
+          type: "pattern",
+          // patternUrl:
+          //   THREEx.ArToolkitContext.baseURL + "assets/pattern-marker.patt",
+          patternUrl: THREEx.ArToolkitContext.baseURL + "assets/marker.patt",
+          // as we controls the camera, set changeMatrixMode: 'cameraTransformMatrix'
+          changeMatrixMode: "cameraTransformMatrix"
+        }
+      );
+      // as we do changeMatrixMode: 'cameraTransformMatrix', start with invisible scene
+      scene.visible = false;
+
+      //////////////////////////////////////////////////////////////////////////////////
+      //		add an object in the scene
+      //////////////////////////////////////////////////////////////////////////////////
+
+      // add a torus knot
+      var geometry = new THREE.CubeGeometry(1, 1, 1);
+      var material = new THREE.MeshNormalMaterial({
+        transparent: true,
+        opacity: 0.5,
+        side: THREE.DoubleSide
+      });
+      var mesh = new THREE.Mesh(geometry, material);
+      mesh.position.y = geometry.parameters.height / 2;
+      scene.add(mesh);
+
+      var geometry = new THREE.TorusKnotGeometry(0.3, 0.1, 64, 16);
+      var material = new THREE.MeshNormalMaterial();
+      var mesh = new THREE.Mesh(geometry, material);
+      mesh.position.y = 0.5;
+      scene.add(mesh);
+
+      onRenderFcts.push(function(delta) {
+        mesh.rotation.x += Math.PI * delta;
+      });
+
+      //////////////////////////////////////////////////////////////////////////////////
+      //		render the whole thing on the page
+      //////////////////////////////////////////////////////////////////////////////////
+
+      // render the scene
+      onRenderFcts.push(function() {
+        renderer.render(scene, camera);
+      });
+
+      // run the rendering loop
+      var lastTimeMsec = null;
+      requestAnimationFrame(function animate(nowMsec) {
+        // keep looping
+        requestAnimationFrame(animate);
+        // measure time
+        lastTimeMsec = lastTimeMsec || nowMsec - 1000 / 60;
+        var deltaMsec = Math.min(200, nowMsec - lastTimeMsec);
+        lastTimeMsec = nowMsec;
+        // call each update function
+        onRenderFcts.forEach(function(onRenderFct) {
+          onRenderFct(deltaMsec / 1000, nowMsec / 1000);
+        });
+      });
+    </script>
   </body>
 </html>
