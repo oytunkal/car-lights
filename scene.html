@@ -100,7 +100,7 @@
       // create atToolkitContext
       var arToolkitContext = new THREEx.ArToolkitContext({
         cameraParametersUrl:
-          THREEx.ArToolkitContext.baseURL + "assets/camera_para.dat",
+          THREEx.ArToolkitContext.baseURL + "./assets/camera_para.dat",
         detectionMode: "mono"
       });
       // initialize it
@@ -131,7 +131,7 @@
           type: "pattern",
           // patternUrl:
           //   THREEx.ArToolkitContext.baseURL + "assets/pattern-marker.patt",
-          patternUrl: THREEx.ArToolkitContext.baseURL + "assets/marker.patt",
+          patternUrl: THREEx.ArToolkitContext.baseURL + "./assets/marker.patt",
           // as we controls the camera, set changeMatrixMode: 'cameraTransformMatrix'
           changeMatrixMode: "cameraTransformMatrix"
         }
