@@ -44,6 +44,15 @@ AFRAME.registerComponent('gesture-handler', {
         this.el.sceneEl.removeEventListener('threefingermove', this.handleRotation);
     },
 
+    handlePosition: function(event) {
+        if (this.isVisible) {
+            this.el.object3D.rotation.y +=
+                event.detail.positionChange.x * this.data.positionFactor;
+            this.el.object3D.rotation.x +=
+                event.detail.positionChange.y * this.data.positionFactor;
+        }
+    },
+    
     handleRotation: function(event) {
         if (this.isVisible) {
             this.el.object3D.rotation.y +=
