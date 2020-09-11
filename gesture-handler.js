@@ -48,7 +48,6 @@ AFRAME.registerComponent('gesture-handler', {
     handlePosition: function(event) {
         if (this.isVisible) {
             this.el.object3D.position.x += this.positionFactor * this.initialPosition.x;
-                
             this.el.object3D.position.y += this.positionFactor * this.initialPosition.y;
                 
         }
