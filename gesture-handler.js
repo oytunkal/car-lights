@@ -3,6 +3,7 @@
 AFRAME.registerComponent('gesture-handler', {
     schema: {
         enabled: { default: true },
+        positionFactor: { default: 5 },
         rotationFactor: { default: 5 },
         minScale: { default: 0.3 },
         maxScale: { default: 8 },
@@ -46,9 +47,9 @@ AFRAME.registerComponent('gesture-handler', {
 
     handlePosition: function(event) {
         if (this.isVisible) {
-            this.el.object3D.position.y += event.detail.positionChange.x * 1;
+            this.el.object3D.position.x += this.positionFactor * this.initialPosition.x;
                 
-            this.el.object3D.position.x += event.detail.positionChange.x * 1;
+            this.el.object3D.position.y += this.positionFactor * this.initialPosition.y;
                 
         }
     },
