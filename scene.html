@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-detector.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-handler.js"></script>
+  </head>
+
+  <body style="margin: 0; overflow: hidden;">
+    <a-scene
+      vr-mode-ui="enabled: false;"
+      loading-screen="enabled: false;"
+      renderer="logarithmicDepthBuffer: true;"
+      arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+      id="scene"
+      embedded
+      gesture-detector
+      shadow="type: pcfsoft"
+    >
+      <a-assets>
+        <a-asset-item id="animated-asset" src="assets/asset.glb"></a-asset-item>
+      </a-assets>
+
+      <a-marker-camera
+        id="animated-marker"
+        type="pattern"
+        preset="custom"
+        url="assets/marker.patt"
+        raycaster="objects: .clickable"
+        emitevents="true"
+        cursor="fuse: false; rayOrigin: mouse;"
+        id="markerA"
+      >
+        <a-entity
+          id="bowser-model"
+          scale="0.23532157304672438 0.23532157304672438 0.23532157304672438"
+          animation-mixer="loop: repeat"
+          gltf-model="#animated-asset"
+          class="clickable"
+          gesture-handler
+        ></a-entity>
+
+        <!-- Custom light 01 | Ambient -->
+        <a-entity
+          light="type: ambient;
+                  intensity: 1;"
+        >
+        </a-entity>
+
+        <!-- Custom light 02.1 | Directional sağ-->
+        <a-entity
+          light="type: directional;
+                  intensity: 1;"
+          position="2 1 0"
+        >
+        </a-entity>
+
+        <!-- Custom light 02.2 | Directional sol-->
+        <a-entity
+          light="type: directional;
+                  intensity: 1;"
+          position="-2 1 0"
+        >
+        </a-entity>
+
+        <!-- Custom light 02.3 | Directional üst-->
+        <a-entity
+          light="type: directional;
+                  intensity: 1;"
+          position="0.2 1.65 -1.65"
+          rotation="45 0 0"
+        >
+        </a-entity>
+
+        <!-- Custom light 02.3 | Directional üst uzak-->
+        <a-entity
+          light="type: directional;
+                  intensity: 1;"
+          position="0.2 0.6 -3"
+          rotation="45 0 0"
+        >
+        </a-entity>
+
+        <!-- Custom light 03 | Point sol-->
+        <a-entity
+          light="type: point;
+                  intensity: 1;"
+          position="-1 0.3 0"
+        >
+        </a-entity>
+
+        <!-- Custom light 03.2 | Point sol uzak-->
+        <a-entity
+          light="type: point;
+                  intensity: 1;"
+          position="-2.7 0.3 0"
+        >
+        </a-entity>
+
+        <!-- Custom light 04 | Point sağ-->
+        <a-entity
+          light="type: point;
+                  intensity: 1;"
+          position="0.9 0.4 0"
+        >
+        </a-entity>
+
+        <!-- Custom light 04 | Point sağ uzak-->
+        <a-entity
+          light="type: point;
+                  intensity: 1;"
+          position="2.3 0.4 0"
+        >
+        </a-entity>
+
+        <!-- Custom light 05 | Point ön-->
+        <a-entity
+          light="type: point;
+                  intensity: 1;"
+          position="0 0.4 -1"
+        >
+        </a-entity>
+
+        <!-- Custom light 05 | Point ön uzak-->
+        <a-entity
+          light="type: point;
+                  intensity: 1;"
+          position="0 0.4 -3"
+        >
+        </a-entity>
+
+        <!-- Custom light 06 | Point arka-->
+        <a-entity
+          light="type: point;
+                  intensity: 1;"
+          position="0 0.4 1.1"
+        >
+        </a-entity>
+
+        <!-- Custom light 06 | Point arka uzak -->
+        <a-entity
+          light="type: point;
+                  intensity: 1;"
+          position="0 0.4 3.3"
+        >
+        </a-entity>
+      </a-marker-camera>
+    </a-scene>
+  </body>
+</html>
