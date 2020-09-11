@@ -3,7 +3,6 @@
 AFRAME.registerComponent('gesture-handler', {
     schema: {
         enabled: { default: true },
-        positionFactor: { default: 5 },
         rotationFactor: { default: 5 },
         minScale: { default: 0.3 },
         maxScale: { default: 8 },
@@ -29,30 +28,23 @@ AFRAME.registerComponent('gesture-handler', {
 
     update: function() {
         if (this.data.enabled) {
-            this.el.sceneEl.addEventListener('threefingermove', this.handlePosition);
-            this.el.sceneEl.addEventListener('twofingermove', this.handleScale);
             this.el.sceneEl.addEventListener('onefingermove', this.handleRotation);
+            this.el.sceneEl.addEventListener('twofingermove', this.handleScale);
+            this.el.sceneEl.addEventListener('threefingermove', this.handlePosition);
+            
         } else {
-            this.el.sceneEl.removeEventListener('threefingermove', this.handlePosition);
-            this.el.sceneEl.removeEventListener('twofingermove', this.handleScale);
             this.el.sceneEl.removeEventListener('onefingermove', this.handleRotation);
+            this.el.sceneEl.removeEventListener('twofingermove', this.handleScale);
+            this.el.sceneEl.removeEventListener('threefingermove', this.handlePosition);
         }
     },
 
     remove: function() {
-        this.el.sceneEl.removeEventListener('threefingermove', this.handlePosition);
-        this.el.sceneEl.removeEventListener('twofingermove', this.handleScale);
         this.el.sceneEl.removeEventListener('onefingermove', this.handleRotation);
+        this.el.sceneEl.removeEventListener('twofingermove', this.handleScale);
+        this.el.sceneEl.removeEventListener('threefingermove', this.handlePosition);
     },
 
-    handlePosition: function(event) {
-        if (this.isVisible) {
-            this.el.object3D.position.x += this.positionFactor * this.initialPosition.x;
-            this.el.object3D.position.y += this.positionFactor * this.initialPosition.y;
-                
-        }
-    },
-    
     handleRotation: function(event) {
         if (this.isVisible) {
             this.el.object3D.rotation.y +=
@@ -75,6 +67,14 @@ AFRAME.registerComponent('gesture-handler', {
             this.el.object3D.scale.x = this.scaleFactor * this.initialScale.x;
             this.el.object3D.scale.y = this.scaleFactor * this.initialScale.y;
             this.el.object3D.scale.z = this.scaleFactor * this.initialScale.z;
+        }
+    },
+    
+    handlePosition: function(event) {
+        if (this.isVisible) {
+            this.el.object3D.position.x += this.positionFactor * this.initialPosition.x;
+            this.el.object3D.position.y += this.positionFactor * this.initialPosition.y;
+                
         }
     },
 });
