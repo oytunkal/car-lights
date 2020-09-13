@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+  <meta
+    name="viewport"
+    content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+  />
+  <head>
+    <!-- three.js library -->
+    <script src="./libs/three.min.js"></script>
+    <!-- ar.js -->
+    <script src="./libs/ar.js"></script>
+    <script src="./libs/ObjectControls.js"></script>
+
+    <script>
+      THREEx.ArToolkitContext.baseURL = "../";
+    </script>
+    <link type="text/css" rel="stylesheet" href="main.css" />
+    <style>
+      .colorPicker {
+        display: inline-block;
+        margin: 0 10px;
+      }
+      #info {
+        display: none;
+      }
+    </style>
+  </head>
+  <body
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin : 0px; overflow: hidden;"
+  >
+    <style>
+      .arjs-loader {
+        margin: 0 auto;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .arjs-loader-spinner {
+        z-index: 10;
+        -webkit-transform: spin 1s linear infinite;
+        animation: spin 1s linear infinite;
+        border: 3px solid #ddd;
+        border-top: 3px solid #42a5f5;
+        border-radius: 50%;
+        height: 75px;
+        width: 75px;
+      }
+
+      @-webkit-keyframes spin {
+        to {
+          border-top-color: #42a5f5;
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes spin {
+        to {
+          border-top-color: #42a5f5;
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <div class="arjs-loader" id="arjs-loader">
+      <div class="arjs-loader-spinner"></div>
+    </div>
+    <div id="info">
+      <span class="colorPicker"
+        ><input id="body-color" type="color" value="#ff0000" /><br />Body</span
+      >
+      <span class="colorPicker"
+        ><input
+          id="scale-slider"
+          type="range"
+          min="0.1"
+          max="3"
+          value="1.5"
+          step="0.1"
+        /><br />Scale Size</span
+      >
+    </div>
+
+    <script type="module">
+      import { GLTFLoader } from "./jsm/loaders/GLTFLoader.js";
+
+      //////////////////////////////////////////////////////////////////////////////////
+      //		Init
+      //////////////////////////////////////////////////////////////////////////////////
+      var camera, scene, renderer, clock, deltaTime, totalTime;
+      var arToolkitSource, arToolkitContext;
+      // var zoomLevel = 1;
+      // array of functions for the rendering loop
+      var onRenderFcts = [];
+      var initiated = false;
+
+      init();
+
+      animate();
+
+      function init() {
+        // init renderer
+        renderer = new THREE.WebGLRenderer({
+          antialias: true,
+          alpha: true
+        });
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setClearColor(new THREE.Color("lightgrey"), 0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 0.85;
+
+        renderer.domElement.style.position = "absolute";
+        renderer.domElement.style.top = "0px";
+        renderer.domElement.style.left = "0px";
+        document.body.appendChild(renderer.domElement);
+
+        clock = new THREE.Clock();
+        deltaTime = 0;
+        totalTime = 0;
+        // init scene and camera
+
+        scene = new THREE.Scene();
+
+        //////////////////////////////////////////////////////////////////////////////////
+        //		Initialize a basic camera
+        //////////////////////////////////////////////////////////////////////////////////
+
+        // Create a camera
+        camera = new THREE.PerspectiveCamera(
+          35,
+          window.innerWidth / window.innerHeight,
+          1,
+          1000
+        );
+        camera.position.set(0, 5, 50);
+        camera.position.z = 30;
+
+        ////////////////////////////////////////////////////////////////////////////////
+        //          handle arToolkitSource
+        ////////////////////////////////////////////////////////////////////////////////
+
+        arToolkitSource = new THREEx.ArToolkitSource({
+          // to read from the webcam
+          sourceType: "webcam"
+
+          // // to read from an image
+          // sourceType : 'image',
+          // sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/images/img.jpg',
+
+          // to read from a video
+          // sourceType : 'video',
+          // sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/videos/headtracking.mp4',
+        });
+
+        arToolkitSource.init(function onReady() {
+          // use a resize to fullscreen mobile devices
+          setTimeout(function() {
+            onResize();
+            document.getElementById("arjs-loader").style.display = "none";
+          }, 1000);
+        });
+
+        ////////////////////////////////////////////////////////////////////////////////
+        //          initialize arToolkitContext
+        ////////////////////////////////////////////////////////////////////////////////
+
+        // create atToolkitContext
+        arToolkitContext = new THREEx.ArToolkitContext({
+          cameraParametersUrl: "assets/camera_para.dat",
+          detectionMode: "mono"
+        });
+        // initialize it
+        arToolkitContext.init(function onCompleted() {
+          // copy projection matrix to camera
+          camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+        });
+
+        ////////////////////////////////////////////////////////////////////////////////
+        //          Create a ArMarkerControls
+        ////////////////////////////////////////////////////////////////////////////////
+
+        // init controls for camera
+        var markerControls = new THREEx.ArMarkerControls(
+          arToolkitContext,
+          camera,
+          {
+            type: "pattern",
+            // patternUrl: "assets/marker.patt",
+            patternUrl: "assets/pattern-marker.patt",
+            // as we controls the camera, set changeMatrixMode: 'cameraTransformMatrix'
+            changeMatrixMode: "cameraTransformMatrix"
+          }
+        );
+        // as we do changeMatrixMode: 'cameraTransformMatrix', start with invisible scene
+        scene.visible = false;
+
+        var ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+        scene.add(ambientLight);
+        // White directional light at half intensity shining from the top.
+        var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
+        //Set up shadow properties for the light
+        directionalLight.shadow.mapSize.width = 512; // default
+        directionalLight.shadow.mapSize.height = 512; // default
+        directionalLight.shadow.camera.near = 0.5; // default
+        directionalLight.shadow.camera.far = 500;
+
+        scene.add(directionalLight.target);
+
+        //Create a PointLight and turn on shadows for the light
+        // var light = new THREE.PointLight( 0xffffff, 1, 100 );
+        // light.position.set( 0, 10, 0 );
+        // light.castShadow = true;            // default false
+        // scene.add( light );
+        //
+        // //Set up shadow properties for the light
+        // light.shadow.mapSize.width = 512;  // default
+        // light.shadow.mapSize.height = 512; // default
+        // light.shadow.camera.near = 0.5;       // default
+        // light.shadow.camera.far = 500      // default
+
+        // materials
+
+        var bodyMaterial = new THREE.MeshPhysicalMaterial({
+          color: 0xff0000,
+          metalness: 0.6,
+          roughness: 0.4,
+          clearcoat: 0.05,
+          clearcoatRoughness: 0.05
+        });
+
+        var carObject = null;
+
+        var bodyColorInput = document.getElementById("body-color");
+        bodyColorInput.addEventListener("input", function() {
+          bodyMaterial.color.set(this.value);
+        });
+
+        var ScaleInput = document.getElementById("scale-slider");
+        ScaleInput.addEventListener("input", function() {
+          carObject.scale.set(this.value, this.value, this.value);
+        });
+
+        // var RotationAxisX = new THREE.Vector3(1, 0, 0).normalize();
+        //
+        // var RotationYInput = document.getElementById("rotation-z-slider");
+        // RotationYInput.addEventListener("input", function() {
+        //   carObject.rotateOnAxis(RotationAxisZ, Math.PI * 0.1); // perform a small rotation every frame
+        // });
+
+        // document.addEventListener("click", function() {});
+
+        // var isDragging = false;
+        //
+        // document.addEventListener("ontouchstart", function() {
+        //   if (e.touches.length > 1) {
+        //   }
+        // });
+
+        // document.addEventListener("contextmenu", function(e) {
+        //   e.preventDefault();
+        //   if (isDragging) {
+        //     isDragging = false;
+        //   } else {
+        //     isDragging = true;
+        //   }
+        // });
+        //
+        // var initialMousePosition = {
+        //   x: 0,
+        //   y: 0
+        // };
+        // document.addEventListener("mousemove", function(e) {
+        //   console.log("initialMousePosition", initialMousePosition);
+        //
+        //   if (isDragging) {
+        //     var deltaMove = {
+        //       x: e.offsetX - initialMousePosition.x,
+        //       y: e.offsetY - initialMousePosition.y
+        //     };
+        //     console.log("deltaMove", deltaMove);
+        //     carObject.position.y = deltaMove.y;
+        //     carObject.position.x = deltaMove.x;
+        //
+        //     initialMousePosition = {
+        //       x: e.offsetX,
+        //       y: e.offsetY
+        //     };
+        //   }
+        // });
+
+        // document.addEventListener("touchmove", function() {});
+
+        var threeGLTFLoader = new GLTFLoader();
+        threeGLTFLoader.load("assets/supra_beyaz_scaleddown.glb", function(
+          gltf
+        ) {
+          var carModel = gltf.scene;
+
+          carModel.traverse(o => {
+            // console.log(o);
+            // if (o.name == "Exterior_Body") o.material = bodyMaterial;
+            if (o.isMesh) o.material = bodyMaterial;
+          });
+          carModel.scale.set(1.5, 1.5, 1.5);
+          directionalLight.target = carModel;
+
+          carObject = carModel;
+
+          var controls = new ObjectControls(
+            camera,
+            renderer.domElement,
+            carObject
+          );
+
+          controls.enableVerticalRotation();
+          controls.setMaxVerticalRotationAngle(Math.PI / 2, Math.PI / 2);
+          controls.setRotationSpeed(0.05);
+
+          // camera.lookAt(carModel.position);
+          scene.add(camera);
+          scene.add(carObject);
+        });
+        // listener for end loading of video
+        window.addEventListener("arjs-video-loaded", function(ev) {});
+        // handle resize
+        window.addEventListener("resize", function() {
+          onResize();
+        });
+      }
+
+      function update() {
+        // update artoolkit on every frame
+        if (arToolkitSource.ready !== false)
+          arToolkitContext.update(arToolkitSource.domElement);
+
+        if (!initiated) {
+          scene.visible = camera.visible;
+        }
+      }
+
+      function render() {
+        renderer.render(scene, camera);
+      }
+
+      function toggleEditor() {
+        var colorPicker = document.getElementById("info");
+        if (scene.visible) {
+          colorPicker.style.display = "inline-block";
+          initiated = true;
+        } else {
+          colorPicker.style.display = "none";
+        }
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        deltaTime = clock.getDelta();
+        totalTime += deltaTime;
+        update();
+        toggleEditor();
+        render();
+      }
+
+      function onResize() {
+        arToolkitSource.onResizeElement();
+        arToolkitSource.copyElementSizeTo(renderer.domElement);
+        if (arToolkitContext.arController !== null) {
+          arToolkitSource.copyElementSizeTo(
+            arToolkitContext.arController.canvas
+          );
+        }
+      }
+    </script>
+  </body>
+</html>
