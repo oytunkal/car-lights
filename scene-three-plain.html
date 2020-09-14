@@ -221,16 +221,15 @@
         // });
         var threeGLTFLoader = new GLTFLoader();
         threeGLTFLoader.load(
-          "assets/GLB_audi_station_white_parts002.glb",
+          "assets/GLB_audi_station_white_parts005_anim02.glb",
           function(gltf) {
             var carModel = gltf.scene;
             // carModel.traverse(o => {
             //   // if (o.name == "Exterior_Body") o.material = bodyMaterial;
             // });
             carModel.getObjectByName("001_carpaint").material = bodyMaterial;
-            carModel.getObjectByName(
-              "006_front_tyres"
-            ).material = glassMaterial;
+            carModel.getObjectByName("002_car_windows").material = glassMaterial;
+            // carModel.getObjectByName "006_front_tyres"
 
             directionalLight.target = carModel;
             scene.add(carModel);
