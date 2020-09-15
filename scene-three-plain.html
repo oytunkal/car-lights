@@ -20,6 +20,11 @@
         right: 10px;
         top: 10px;
       }
+      .engineWindow {
+        position: absolute;
+        right: 80px;
+        top: 10px;
+      }
       .infoIcon {
         padding: 10px;
         background-color: blue;
@@ -48,20 +53,20 @@
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       var constraints = {
         video: {
-          facingMode: "environment"
-        }
+          facingMode: "environment",
+        },
       };
 
       navigator.mediaDevices
         .getUserMedia(constraints)
-        .then(function(stream) {
+        .then(function (stream) {
           // apply the stream to the video element used in the texture
           video.srcObject = stream;
-          video.onloadedmetadata = function(e) {
+          video.onloadedmetadata = function (e) {
             video.play();
           };
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Unable to access the camera/webcam.", error);
         });
     } else {
@@ -69,7 +74,8 @@
     }
   </script>
   <script>
-    var infoVisible = false;
+    var infoVisible,
+      engineRunning = false;
     function toggle(e) {
       e.preventDefault();
       if (infoVisible) {
@@ -80,14 +86,26 @@
         infoVisible = true;
       }
     }
+    function toggleEngine(e) {
+      // e.preventDefault();
+      if (engineRunning) {
+        document.getElementById("audio").pause();
+        engineRunning = false;
+      } else {
+        document.getElementById("audio").play();
+        engineRunning = true;
+      }
+    }
   </script>
   <body>
     <div id="info">
       <div class="colorPicker">
-        <input id="body-color" type="color" value="#ff0000" /><br />Body
+        <input id="body-color" type="color" value="#ff0000" /><br />Farbe
       </div>
-      <div class="colorPicker">
-        <input id="glass-color" type="color" value="#ffffff" /><br />Glass
+      <div class="engineWindow">
+        <div class="infoIcon">
+          <a href="#" onclick="toggleEngine(event);">Starten</a>
+        </div>
       </div>
       <div class="infoWindow">
         <div class="infoIcon">
@@ -100,6 +118,9 @@
         <p>besuchen Sie unsere Website</p>
       </div>
     </div>
+    <audio id="audio" loop>
+      <source src="assets/BMW+DRIVEBY.mp3" type="audio/mpeg" />
+    </audio>
     <video
       id="video"
       autoplay
@@ -125,7 +146,7 @@
         // init renderer
         renderer = new THREE.WebGLRenderer({
           antialias: true,
-          alpha: true
+          alpha: true,
         });
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
@@ -192,29 +213,29 @@
           metalness: 0.6,
           roughness: 0.4,
           clearcoat: 0.05,
-          clearcoatRoughness: 0.05
+          clearcoatRoughness: 0.05,
         });
 
-        var glassMaterial = new THREE.MeshPhysicalMaterial({
-          color: 0xffffff,
-          metalness: 0,
-          roughness: 0.1,
-          transmission: 0.9,
-          transparent: true
-        });
+        // var glassMaterial = new THREE.MeshPhysicalMaterial({
+        //   color: 0xffffff,
+        //   metalness: 0,
+        //   roughness: 0.1,
+        //   transmission: 0.9,
+        //   transparent: true
+        // });
         // var detailsMaterial = new THREE.MeshStandardMaterial({
         //   color: 0xffffff,
         //   metalness: 1.0,
         //   roughness: 0.5
         // });
         var bodyColorInput = document.getElementById("body-color");
-        bodyColorInput.addEventListener("input", function() {
+        bodyColorInput.addEventListener("input", function () {
           bodyMaterial.color.set(this.value);
         });
-        var glassColorInput = document.getElementById("glass-color");
-        glassColorInput.addEventListener("input", function() {
-          glassMaterial.color.set(this.value);
-        });
+        // var glassColorInput = document.getElementById("glass-color");
+        // glassColorInput.addEventListener("input", function () {
+        //   glassMaterial.color.set(this.value);
+        // });
         // var detailsColorInput = document.getElementById("details-color");
         // detailsColorInput.addEventListener("input", function() {
         //   detailsMaterial.color.set(this.value);
@@ -222,16 +243,16 @@
         var threeGLTFLoader = new GLTFLoader();
         threeGLTFLoader.load(
           "assets/GLB_audi_station_white_parts_anim05_taillight.glb",
-          function(gltf) {
+          function (gltf) {
             var carModel = gltf.scene;
             // carModel.traverse(o => {
             //   console.log(o.name);
             //   // if (o.name == "Exterior_Body") o.material = bodyMaterial;
             // });
             carModel.getObjectByName("001_carpaint").material = bodyMaterial;
-            carModel.getObjectByName(
-              "002_car_windows"
-            ).material = glassMaterial;
+            // carModel.getObjectByName(
+            //   "002_car_windows"
+            // ).material = glassMaterial;
             // carModel.getObjectByName "006_front_tyres"
             wheels.push(
               carModel.getObjectByName("007_back_tyres"),
@@ -245,10 +266,12 @@
 
       function render() {
         var time = performance.now() / 1000;
-
-        for (var i = 0; i < wheels.length; i++) {
-          wheels[i].rotation.x = time * Math.PI;
+        if (engineRunning) {
+          for (var i = 0; i < wheels.length; i++) {
+            wheels[i].rotation.x = time * Math.PI;
+          }
         }
+
         renderer.render(scene, camera);
       }
 
