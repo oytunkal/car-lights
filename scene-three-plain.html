@@ -244,7 +244,7 @@
       }
 
       function render() {
-        var time = -performance.now() / 1000;
+        var time = performance.now() / 1000;
 
         for (var i = 0; i < wheels.length; i++) {
           wheels[i].rotation.x = time * Math.PI;
