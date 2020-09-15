@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+  <meta charset="UTF-8" />
+
   <meta
     name="viewport"
     content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
@@ -94,7 +96,7 @@
       </div>
       <div id="infoWrapper">
         <h2>Station Wagon Autos</h2>
-        <h3>Für weitere Informationen </h3>
+        <h3>Für weitere Informationen</h3>
         <p>besuchen Sie unsere Website</p>
       </div>
     </div>
@@ -115,9 +117,7 @@
       //////////////////////////////////////////////////////////////////////////////////
       var camera, scene, renderer, controls;
       var arToolkitSource, arToolkitContext;
-      // var zoomLevel = 1;
-      // array of functions for the rendering loop
-      var onRenderFcts = [];
+      var wheels = [];
 
       init();
 
@@ -155,7 +155,7 @@
           0.1,
           1000
         );
-        camera.position.set(1, 2, 3);
+        camera.position.set(1, 2, 13);
 
         controls = new OrbitControls(camera, container);
         controls.target.set(0, 0, 0);
@@ -225,12 +225,18 @@
           function(gltf) {
             var carModel = gltf.scene;
             // carModel.traverse(o => {
+            //   console.log(o.name);
             //   // if (o.name == "Exterior_Body") o.material = bodyMaterial;
             // });
             carModel.getObjectByName("001_carpaint").material = bodyMaterial;
-            carModel.getObjectByName("002_car_windows").material = glassMaterial;
+            carModel.getObjectByName(
+              "002_car_windows"
+            ).material = glassMaterial;
             // carModel.getObjectByName "006_front_tyres"
-
+            wheels.push(
+              carModel.getObjectByName("007_back_tyres"),
+              carModel.getObjectByName("006_front_tyres")
+            );
             directionalLight.target = carModel;
             scene.add(carModel);
           }
@@ -238,6 +244,11 @@
       }
 
       function render() {
+        var time = -performance.now() / 1000;
+
+        for (var i = 0; i < wheels.length; i++) {
+          wheels[i].rotation.x = time * Math.PI;
+        }
         renderer.render(scene, camera);
       }
 
