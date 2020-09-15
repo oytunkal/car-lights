@@ -11,20 +11,7 @@
     <script src="./libs/three.min.js"></script>
     <link type="text/css" rel="stylesheet" href="main.css" />
     <style>
-      // .colorPicker {
-      //  display: inline-block;
-      //  margin: 0 10px;
-      }
-      // .infoWindow {
-      //  position: absolute;
-      //  right: 10px;
-      //  top: 10px;
-      }
-      // .infoIcon {
-      //  padding: 10px;
-      //  background-color: blue;
-      }
-      #video {
+        #video {
         position: absolute;
         width: 100%;
         z-index: -1;
@@ -34,15 +21,7 @@
         top: 0;
         /* object-fit: cover; */
       }
-      // #infoWrapper {
-      //  display: none;
-      //  position: absolute;
-      //  right: 10px;
-      //  top: 60px;
-      //  padding: 10px;
-      //  background-color: blue;
-      }
-    </style>
+      </style>
   </head>
   <script>
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -68,47 +47,9 @@
       console.error("MediaDevices interface not available.");
     }
   </script>
-  <script>
-    var infoVisible = false;
-    function toggle(e) {
-      e.preventDefault();
-      if (infoVisible) {
-        document.getElementById("infoWrapper").style.display = "none";
-        infoVisible = false;
-      } else {
-        document.getElementById("infoWrapper").style.display = "inline-block";
-        infoVisible = true;
-      }
-    }
-  </script>
+  
   <body>
-    // <div id="info">
-    // <div class="colorPicker">
-        <input id="body-color" type="color" value="#ff0000" /><br />Body
-       </div>
-    // <div class="colorPicker">
-        <input id="glass-color" type="color" value="#ffffff" /><br />Glass
-       </div>
-    // <div class="infoWindow">
-    // <div class="infoIcon">
-          <a href="#" onclick="toggle(event);">Info</a>
-        </div>
-      </div>
-    //<div id="infoWrapper">
-       // <h2>Station Wagon Autos</h2>
-       // <h3>Für weitere Informationen</h3>
-       // <p>besuchen Sie unsere Website</p>
-      </div>
-    </div>
-    <video
-      id="video"
-      autoplay
-      webkit-playsinline="true"
-      playsinline="true"
-    ></video>
-    <div id="container"></div>
-
-    <script type="module">
+      <script type="module">
       import { GLTFLoader } from "./jsm/loaders/GLTFLoader.js";
       import { OrbitControls } from "./jsm/controls/OrbitControls.js";
 
@@ -175,91 +116,25 @@
 
         scene.add(directionalLight.target);
 
-        //Create a PointLight and turn on shadows for the light
-        // var light = new THREE.PointLight( 0xffffff, 1, 100 );
-        // light.position.set( 0, 10, 0 );
-        // light.castShadow = true;            // default false
-        // scene.add( light );
-        //
-        // //Set up shadow properties for the light
-        // light.shadow.mapSize.width = 512;  // default
-        // light.shadow.mapSize.height = 512; // default
-        // light.shadow.camera.near = 0.5;       // default
-        // light.shadow.camera.far = 500      // default
-
-        // var bodyMaterial = new THREE.MeshPhysicalMaterial({
-          color: 0xff0000,
-          metalness: 0.6,
-          roughness: 0.4,
-          clearcoat: 0.05,
-          clearcoatRoughness: 0.05
-        });
-
-        // var glassMaterial = new THREE.MeshPhysicalMaterial({
-          color: 0xffffff,
-          metalness: 0,
-          roughness: 0.1,
-          transmission: 0.9,
-          transparent: true
-        });
-        // var detailsMaterial = new THREE.MeshStandardMaterial({
-        //   color: 0xffffff,
-        //   metalness: 1.0,
-        //   roughness: 0.5
-        // });
-        // var bodyColorInput = document.getElementById("body-color");
-        bodyColorInput.addEventListener("input", function() {
-          bodyMaterial.color.set(this.value);
-        });
-        // var glassColorInput = document.getElementById("glass-color");
-        glassColorInput.addEventListener("input", function() {
-          glassMaterial.color.set(this.value);
-        });
-        // var detailsColorInput = document.getElementById("details-color");
-        // detailsColorInput.addEventListener("input", function() {
-        //   detailsMaterial.color.set(this.value);
-        // });
+          
+       
         var threeGLTFLoader = new GLTFLoader();
         threeGLTFLoader.load(
           "assets/GLB_galatatower.glb",
           function(gltf) {
-            var carModel = gltf.scene;
-            // carModel.traverse(o => {
-            //   console.log(o.name);
-            //   // if (o.name == "Exterior_Body") o.material = bodyMaterial;
-            // });
-            // carModel.getObjectByName("001_carpaint").material = bodyMaterial;
-            // carModel.getObjectByName(
-              "002_car_windows"
-            ).material = glassMaterial;
-            // carModel.getObjectByName "006_front_tyres"
-            wheels.push(
-              carModel.getObjectByName("007_back_tyres"),
-              carModel.getObjectByName("006_front_tyres")
-            );
-            directionalLight.target = carModel;
-            scene.add(carModel);
+            var towerModel = gltf.scene;
+            directionalLight.target = towerModel;
+            scene.add(towerModel);
           }
         );
       }
 
-      // function render() {
-      //  var time = performance.now() / 1000;
-
-      //  for (var i = 0; i < wheels.length; i++) {
-      //   wheels[i].rotation.x = time * Math.PI;
-        }
-        renderer.render(scene, camera);
+      renderer.render(scene, camera);
       }
 
       function onResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
-
-        // var video = document.getElementById("video");
-        //
-        // video.setAttribute("height", window.innerHeight);
-        // video.setAttribute("width", window.innerWidth);
 
         renderer.setSize(window.innerWidth, window.innerHeight);
       }
