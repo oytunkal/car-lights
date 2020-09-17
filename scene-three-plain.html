@@ -11,9 +11,28 @@
     <script src="./libs/three.min.js"></script>
     <link type="text/css" rel="stylesheet" href="main.css" />
     <style>
-      .colorPicker {
+      .colorPalette {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+      }
+      .colorPaletteCta {
         display: inline-block;
-        margin: 0 10px;
+        background-color: #182f59;
+        padding: 5px;
+      }
+      #colorPaletteWrapper {
+        position: absolute;
+        left: 60px;
+        top: 0px;
+        display: none;
+      }
+      .colorIcon {
+        display: inline-block;
+        padding: 5px;
+        margin-bottom: 5px;
+        width: 10px;
+        height: 10px;
       }
       .infoWindow {
         position: absolute;
@@ -22,12 +41,12 @@
       }
       .engineWindow {
         position: absolute;
-        right: 80px;
+        right: 60px;
         top: 10px;
       }
       .infoIcon {
-        padding: 10px;
-        background-color: blue;
+        padding: 5px;
+        background-color: #182f59;
       }
       #video {
         position: absolute;
@@ -43,9 +62,11 @@
         display: none;
         position: absolute;
         right: 10px;
-        top: 60px;
-        padding: 10px;
-        background-color: blue;
+        top: 50px;
+        width: 105px;
+        padding: 5px;
+        background-color: #182f59;
+        color: #fff;
       }
     </style>
   </head>
@@ -75,7 +96,21 @@
   </script>
   <script>
     var infoVisible,
+      paletteVisible,
       engineRunning = false;
+
+    function togglePalette(e) {
+      e.preventDefault();
+      if (paletteVisible) {
+        document.getElementById("colorPaletteWrapper").style.display = "none";
+        paletteVisible = false;
+      } else {
+        document.getElementById("colorPaletteWrapper").style.display =
+          "inline-block";
+        paletteVisible = true;
+      }
+    }
+
     function toggle(e) {
       e.preventDefault();
       if (infoVisible) {
@@ -98,10 +133,44 @@
     }
   </script>
   <body>
-    <div id="info">
-      <div class="colorPicker">
-        <input id="body-color" type="color" value="#ffffff" /><br />Farbe
+    <div class="colorPalette">
+      <div class="colorPaletteCta">
+        <a href="#" onclick="togglePalette(event);">Farbe</a>
       </div>
+      <div id="colorPaletteWrapper">
+        <div
+          class="colorIcon body-color"
+          style="background-color: black;"
+          data-color="black"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: white;"
+          data-color="white"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: #33363d;"
+          data-color="#33363D"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: #aaaaaa;"
+          data-color="#AAAAAA"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: #182f59;"
+          data-color="#182F59"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: #bb2516;"
+          data-color="#BB2516"
+        ></div>
+      </div>
+    </div>
+    <div id="info">
       <div class="engineWindow">
         <div class="infoIcon">
           <a href="#" onclick="toggleEngine(event);">Starten</a>
@@ -113,9 +182,8 @@
         </div>
       </div>
       <div id="infoWrapper">
-        <h2>Station Wagon Autos</h2>
-        <h3>Für weitere Informationen</h3>
-        <p>besuchen Sie unsere Website</p>
+        <h4>Station Wagon Autos</h4>
+        <p>Für weitere Informationen besuchen Sie unsere Website</p>
       </div>
     </div>
     <audio id="audio" loop>
@@ -228,10 +296,18 @@
         //   metalness: 1.0,
         //   roughness: 0.5
         // });
-        var bodyColorInput = document.getElementById("body-color");
-        bodyColorInput.addEventListener("input", function () {
-          bodyMaterial.color.set(this.value);
-        });
+        var bodyColorSelection = document.getElementsByClassName("body-color");
+        for (var i = 0; i < bodyColorSelection.length; i++) {
+          bodyColorSelection[i].addEventListener(
+            "click",
+            function (event) {
+              event.preventDefault();
+              var attribute = this.getAttribute("data-color");
+              bodyMaterial.color.set(attribute);
+            },
+            false
+          );
+        }
         // var glassColorInput = document.getElementById("glass-color");
         // glassColorInput.addEventListener("input", function () {
         //   glassMaterial.color.set(this.value);
@@ -278,11 +354,6 @@
       function onResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
-
-        // var video = document.getElementById("video");
-        //
-        // video.setAttribute("height", window.innerHeight);
-        // video.setAttribute("width", window.innerWidth);
 
         renderer.setSize(window.innerWidth, window.innerHeight);
       }
