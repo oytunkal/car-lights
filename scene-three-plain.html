@@ -23,9 +23,8 @@
       }
       #colorPaletteWrapper {
         position: absolute;
-        left: 60px;
+        left: 10px;
         top: 0px;
-        display: none;
       }
       .colorIcon {
         display: inline-block;
@@ -33,6 +32,7 @@
         margin-bottom: 5px;
         width: 10px;
         height: 10px;
+        cursor: pointer;
       }
       .infoWindow {
         position: absolute;
@@ -134,9 +134,6 @@
   </script>
   <body>
     <div class="colorPalette">
-      <div class="colorPaletteCta">
-        <a href="#" onclick="togglePalette(event);">Farbe</a>
-      </div>
       <div id="colorPaletteWrapper">
         <div
           class="colorIcon body-color"
