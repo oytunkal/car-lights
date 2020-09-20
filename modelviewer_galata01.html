@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+    <script type="module"
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
+</script>
+    <script nomodule
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
+</script>  
+    </head>
+    
+    <body>
+    <model-viewer src="assets/GLB_galatatower.glb"
+    // ios-src="../assets/Chair.usdz"
+    // poster="../assets/ChairPoster.png"         
+    // camera-orbit="1.2195rad 1.362rad auto"
+    // stage-light-intensity="3" environment-intensity="2"          
+    ar
+    ar-modes="webxr scene-viewer quick-look fallback"
+    auto-rotate camera-controls   
+    background-color="#70BCD1"          
+    shadow-intensity="1" 
+    camera-orbit="-20deg 75deg 2m"          
+    alt="Station Wagon Car">
+</model-viewer>    
+    
+<button slot="ar-button" id="ar-button">
+    View in your space
+  </button>
+    
+  </body> 
+</html> 
