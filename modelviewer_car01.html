@@ -1,13 +1,13 @@
 <!DOCTYPE html>
     <html>
-    <head>
     <meta charset="UTF-8" />
 
   <meta
     name="viewport"
     content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
-  />    
-      
+  />
+        
+    <head>
     <script type="module"
     src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
 </script>
@@ -17,23 +17,29 @@
     </head>
     
     <body>
-<model-viewer src="assets/audi_station_white_materialfix_08.glb"
-    // ios-src="../assets/Chair.usdz"
-    // poster="../assets/ChairPoster.png"         
-    // camera-orbit="1.2195rad 1.362rad auto"
-    // stage-light-intensity="3" environment-intensity="2"          
+    <model-viewer src="assets/audi_station_white_materialfix_08.glb"
+    
+    <!-- ios-src="../assets/Chair.usdz" 
+    poster="../assets/ChairPoster.png"         
+    camera-orbit="1.2195rad 1.362rad auto"
+    stage-light-intensity="3" environment-intensity="2"
+    camera-orbit="-20deg 75deg 2m"
+    -->
+        
     ar
     ar-modes="webxr scene-viewer quick-look fallback"
-    auto-rotate camera-controls   
+    auto-rotate camera-controls
+    camera-controls              
+    ar-scale="fixed"              
     background-color="#70BCD1"          
-    shadow-intensity="1" 
-    camera-orbit="-20deg 75deg 2m"          
-    alt="Station Wagon Car">
+    shadow-intensity="1"
+    camera-orbit="1.2195rad 1.362rad auto"              
+    alt="Galata Tower">
 </model-viewer>    
     
-<!--button slot="ar-button" id="ar-button">
-    View in your space
-  </button-->
-        
-    </body> 
-</html>  
+<!-- button slot="ar-button" id="ar-button">
+ View in your space
+</button -->
+    
+  </body> 
+</html>    
