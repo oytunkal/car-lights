@@ -1,14 +1,28 @@
 <!DOCTYPE html>
-<html>
-<model-viewer
-    src="../assets/audi_station_white_materialfix_08.glb"
+    <html>
+    <script type="module"
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
+</script>
+    <script nomodule
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
+</script>  
+    
+<model-viewer src="assets/audi_station_white_materialfix_08.glb"
     // ios-src="../assets/Chair.usdz"
-    poster="../assets/ChairPoster.png"
-    camera-orbit="1.2195rad 1.362rad auto"
-    shadow-intensity="1"
+    // poster="../assets/ChairPoster.png"         
+    // camera-orbit="1.2195rad 1.362rad auto"
+    // stage-light-intensity="3" environment-intensity="2"          
     ar
     ar-modes="webxr scene-viewer quick-look fallback"
-    camera-controls
-    alt="3D model of a chair with footrest"
->
+    auto-rotate camera-controls   
+    background-color="#70BCD1"          
+    shadow-intensity="1" 
+    camera-orbit="-20deg 75deg 2m"          
+    alt="Station Wagon Car">
+</model-viewer>    
+
+<button slot="ar-button" id="ar-button">
+    View in your space
+  </button>
+    
 </html>  
