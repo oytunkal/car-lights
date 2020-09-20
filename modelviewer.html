@@ -1,12 +1,15 @@
 <!DOCTYPE html>
     <html>
+    <head>
     <script type="module"
     src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
 </script>
     <script nomodule
     src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
 </script>  
+    </head>
     
+    <body>
 <model-viewer src="assets/audi_station_white_materialfix_08.glb"
     // ios-src="../assets/Chair.usdz"
     // poster="../assets/ChairPoster.png"         
@@ -20,9 +23,10 @@
     camera-orbit="-20deg 75deg 2m"          
     alt="Station Wagon Car">
 </model-viewer>    
-
+    
 <button slot="ar-button" id="ar-button">
     View in your space
   </button>
-    
+        
+    </body> 
 </html>  
