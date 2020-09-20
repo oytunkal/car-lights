@@ -18,16 +18,22 @@
     
     <body>
     <model-viewer src="assets/GLB_galatatower.glb"
-    // ios-src="../assets/Chair.usdz"
-    // poster="../assets/ChairPoster.png"         
-    // camera-orbit="1.2195rad 1.362rad auto"
-    // stage-light-intensity="3" environment-intensity="2"          
+    
+    <!-- ios-src="../assets/Chair.usdz" 
+    poster="../assets/ChairPoster.png"         
+    camera-orbit="1.2195rad 1.362rad auto"
+    stage-light-intensity="3" environment-intensity="2"
+    -->
+        
     ar
     ar-modes="webxr scene-viewer quick-look fallback"
-    auto-rotate camera-controls   
+    auto-rotate camera-controls
+    camera-controls              
+    ar-scale="fixed"              
     background-color="#70BCD1"          
     shadow-intensity="1" 
-    camera-orbit="-20deg 75deg 2m"          
+    // camera-orbit="-20deg 75deg 2m"      
+    camera-orbit="1.2195rad 1.362rad auto"              
     alt="Galata Tower">
 </model-viewer>    
     
