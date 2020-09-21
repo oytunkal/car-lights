@@ -41,12 +41,8 @@
       }
       .engineWindow {
         position: absolute;
-        right: 60px;
+        right: 90px;
         top: 10px;
-      }
-      .infoIcon {
-        padding: 5px;
-        background-color: #182f59;
       }
       #video {
         position: absolute;
@@ -62,7 +58,7 @@
         display: none;
         position: absolute;
         right: 10px;
-        top: 50px;
+        top: 70px;
         width: 105px;
         padding: 5px;
         background-color: #182f59;
@@ -169,20 +165,27 @@
     </div>
     <div id="info">
       <div class="engineWindow">
-        <div class="infoIcon">
-          <a href="#" onclick="toggleEngine(event);">Starten</a>
-        </div>
+        <img
+          src="assets/Engine_Start_Button_icon_white.png"
+          style="width: 70px; pointer-events: auto; cursor: pointer;"
+          onclick="toggleEngine(event);"
+          alt=""
+        />
       </div>
       <div class="infoWindow">
-        <div class="infoIcon">
-          <a href="#" onclick="toggle(event);">Info</a>
-        </div>
+        <img
+          src="assets/info2.png"
+          style="width: 70px; pointer-events: auto; cursor: pointer;"
+          onclick="toggle(event);"
+          alt=""
+        />
       </div>
       <div id="infoWrapper">
         <h4>Station Wagon Autos</h4>
         <p>Für weitere Informationen besuchen Sie unsere Website</p>
       </div>
     </div>
+
     <audio id="audio">
       <source src="assets/audi_enginestart.mp3" type="audio/mpeg" />
     </audio>
