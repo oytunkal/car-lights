@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <meta charset="UTF-8" />
+
   <meta
     name="viewport"
     content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
@@ -9,7 +10,62 @@
     <!-- three.js library -->
     <script src="./libs/three.min.js"></script>
     <link type="text/css" rel="stylesheet" href="main.css" />
-      </head>
+    <style>
+      .colorPalette {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+      }
+      .colorPaletteCta {
+        display: inline-block;
+        background-color: #182f59;
+        padding: 5px;
+      }
+      #colorPaletteWrapper {
+        position: absolute;
+        left: 10px;
+        top: 0px;
+      }
+      .colorIcon {
+        display: inline-block;
+        padding: 5px;
+        margin-bottom: 5px;
+        width: 10px;
+        height: 10px;
+        cursor: pointer;
+      }
+      .infoWindow {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+      }
+      .engineWindow {
+        position: absolute;
+        right: 90px;
+        top: 10px;
+      }
+      #video {
+        position: absolute;
+        width: 100%;
+        z-index: -1;
+        height: 100%;
+        left: 0;
+        object-fit: cover;
+        top: 0;
+        /* object-fit: cover; */
+      }
+      #infoWrapper {
+        display: none;
+        position: absolute;
+        right: 10px;
+        top: 70px;
+        width: 105px;
+        padding: 5px;
+        background-color: #182f59;
+        color: #fff;
+      }
+    </style>
+  </head>
   <script>
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       var constraints = {
@@ -34,7 +90,112 @@
       console.error("MediaDevices interface not available.");
     }
   </script>
+  <script>
+    var infoVisible,
+      paletteVisible,
+      engineRunning = false;
 
+    function togglePalette(e) {
+      e.preventDefault();
+      if (paletteVisible) {
+        document.getElementById("colorPaletteWrapper").style.display = "none";
+        paletteVisible = false;
+      } else {
+        document.getElementById("colorPaletteWrapper").style.display =
+          "inline-block";
+        paletteVisible = true;
+      }
+    }
+
+    function toggle(e) {
+      e.preventDefault();
+      if (infoVisible) {
+        document.getElementById("infoWrapper").style.display = "none";
+        infoVisible = false;
+      } else {
+        document.getElementById("infoWrapper").style.display = "inline-block";
+        infoVisible = true;
+      }
+    }
+    function toggleEngine(e) {
+      // e.preventDefault();
+      if (engineRunning) {
+        document.getElementById("audio").pause();
+        engineRunning = false;
+      } else {
+        document.getElementById("audio").play();
+        engineRunning = true;
+      }
+    }
+  </script>
+  <body>
+    <div class="colorPalette">
+      <div id="colorPaletteWrapper">
+        <div
+          class="colorIcon body-color"
+          style="background-color: black;"
+          data-color="black"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: white;"
+          data-color="white"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: #33363d;"
+          data-color="#33363D"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: #aaaaaa;"
+          data-color="#AAAAAA"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: #182f59;"
+          data-color="#182F59"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: #bb2516;"
+          data-color="#BB2516"
+        ></div>
+      </div>
+    </div>
+    <div id="info">
+      <div class="engineWindow">
+        <img
+          src="assets/Engine_Start_Button_icon_white.png"
+          style="width: 70px; pointer-events: auto; cursor: pointer;"
+          onclick="toggleEngine(event);"
+          alt=""
+        />
+      </div>
+      <div class="infoWindow">
+        <img
+          src="assets/info2.png"
+          style="width: 70px; pointer-events: auto; cursor: pointer;"
+          onclick="toggle(event);"
+          alt=""
+        />
+      </div>
+      <div id="infoWrapper">
+        <h4>Station Wagon Autos</h4>
+        <p>Für weitere Informationen besuchen Sie unsere Website</p>
+      </div>
+    </div>
+
+    <audio id="audio">
+      <source src="assets/audi_enginestart.mp3" type="audio/mpeg" />
+    </audio>
+    <video
+      id="video"
+      autoplay
+      webkit-playsinline="true"
+      playsinline="true"
+    ></video>
+    <div id="container"></div>
 
     <script type="module">
       import { GLTFLoader } from "./jsm/loaders/GLTFLoader.js";
@@ -164,8 +325,14 @@
             //   console.log(o.name);
             //   // if (o.name == "Exterior_Body") o.material = bodyMaterial;
             // });
-            carModel.getObjectByName("064").material = bodyMaterial;
-           
+            carModel.getObjectByName("001_carpaint").material = bodyMaterial;
+            // carModel.getObjectByName(
+            //   "002_car_windows"
+            // ).material = glassMaterial;
+            // carModel.getObjectByName "006_front_tyres"
+            wheels.push(
+              carModel.getObjectByName("007_back_tyres"),
+              carModel.getObjectByName("006_front_tyres")
             );
             directionalLight.target = carModel;
             scene.add(carModel);
@@ -173,7 +340,12 @@
         );
       }
 
-     
+      function render() {
+        var time = performance.now() / 500;
+        if (engineRunning) {
+          for (var i = 0; i < wheels.length; i++) {
+            wheels[i].rotation.x = time * Math.PI;
+          }
         }
 
         renderer.render(scene, camera);
