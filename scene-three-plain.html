@@ -30,18 +30,19 @@
         display: inline-block;
         padding: 5px;
         margin-bottom: 5px;
-        width: 10px;
-        height: 10px;
+        width: 20px;
+        height: 20px;
         cursor: pointer;
+        border-radius: 10px;
       }
       .infoWindow {
         position: absolute;
         right: 10px;
-        top: 10px;
+        bottom: 10px;
       }
       .engineWindow {
         position: absolute;
-        right: 90px;
+        right: 10px;
         top: 10px;
       }
       #video {
@@ -55,14 +56,16 @@
         /* object-fit: cover; */
       }
       #infoWrapper {
-        display: none;
+        /* display: none; */
         position: absolute;
         right: 10px;
-        top: 70px;
-        width: 105px;
-        padding: 5px;
-        background-color: #182f59;
-        color: #fff;
+        bottom: 100px;
+        width: 200px;
+        padding-left: 20px;
+        padding-right: 20px;
+        background-color: rgba(255, 255, 255, 0.5);
+        color: #000;
+        border-radius: 10px;
       }
     </style>
   </head>
@@ -163,6 +166,23 @@
         ></div>
       </div>
     </div>
+    <div class="infoWindow">
+      <img
+        src="assets/info2.png"
+        style="width: 70px; pointer-events: auto; cursor: pointer;"
+        onclick="toggle(event);"
+        alt=""
+      />
+    </div>
+    <div id="infoWrapper">
+      <h3>Station Wagon Autos</h3>
+      <p>
+        Für weitere Informationen besuchen Sie unsere
+        <a href="https://www.youtube.com/watch?v=i1xsf254RiY" target="_blank"
+          >Website</a
+        >
+      </p>
+    </div>
     <div id="info">
       <div class="engineWindow">
         <img
@@ -171,18 +191,6 @@
           onclick="toggleEngine(event);"
           alt=""
         />
-      </div>
-      <div class="infoWindow">
-        <img
-          src="assets/info2.png"
-          style="width: 70px; pointer-events: auto; cursor: pointer;"
-          onclick="toggle(event);"
-          alt=""
-        />
-      </div>
-      <div id="infoWrapper">
-        <h4>Station Wagon Autos</h4>
-        <p>Für weitere Informationen besuchen Sie unsere Website</p>
       </div>
     </div>
 
