@@ -14,17 +14,12 @@
       .colorPalette {
         position: absolute;
         left: 10px;
-        top: 10px;
+        bottom: 10px;
       }
       .colorPaletteCta {
         display: inline-block;
         background-color: #182f59;
         padding: 5px;
-      }
-      #colorPaletteWrapper {
-        position: absolute;
-        left: 10px;
-        top: 0px;
       }
       .colorIcon {
         display: inline-block;
@@ -43,7 +38,7 @@
       .engineWindow {
         position: absolute;
         right: 10px;
-        top: 10px;
+        top: 20px;
       }
       #video {
         position: absolute;
@@ -95,20 +90,7 @@
   </script>
   <script>
     var infoVisible,
-      paletteVisible,
       engineRunning = false;
-
-    function togglePalette(e) {
-      e.preventDefault();
-      if (paletteVisible) {
-        document.getElementById("colorPaletteWrapper").style.display = "none";
-        paletteVisible = false;
-      } else {
-        document.getElementById("colorPaletteWrapper").style.display =
-          "inline-block";
-        paletteVisible = true;
-      }
-    }
 
     function toggle(e) {
       e.preventDefault();
@@ -133,38 +115,36 @@
   </script>
   <body>
     <div class="colorPalette">
-      <div id="colorPaletteWrapper">
-        <div
-          class="colorIcon body-color"
-          style="background-color: black;"
-          data-color="black"
-        ></div>
-        <div
-          class="colorIcon body-color"
-          style="background-color: white;"
-          data-color="white"
-        ></div>
-        <div
-          class="colorIcon body-color"
-          style="background-color: #33363d;"
-          data-color="#33363D"
-        ></div>
-        <div
-          class="colorIcon body-color"
-          style="background-color: #aaaaaa;"
-          data-color="#AAAAAA"
-        ></div>
-        <div
-          class="colorIcon body-color"
-          style="background-color: #182f59;"
-          data-color="#182F59"
-        ></div>
-        <div
-          class="colorIcon body-color"
-          style="background-color: #bb2516;"
-          data-color="#BB2516"
-        ></div>
-      </div>
+      <div
+        class="colorIcon body-color"
+        style="background-color: black;"
+        data-color="black"
+      ></div>
+      <div
+        class="colorIcon body-color"
+        style="background-color: white;"
+        data-color="white"
+      ></div>
+      <div
+        class="colorIcon body-color"
+        style="background-color: #33363d;"
+        data-color="#33363D"
+      ></div>
+      <div
+        class="colorIcon body-color"
+        style="background-color: #aaaaaa;"
+        data-color="#AAAAAA"
+      ></div>
+      <div
+        class="colorIcon body-color"
+        style="background-color: #182f59;"
+        data-color="#182F59"
+      ></div>
+      <div
+        class="colorIcon body-color"
+        style="background-color: #bb2516;"
+        data-color="#BB2516"
+      ></div>
     </div>
     <div class="infoWindow">
       <img
@@ -284,7 +264,7 @@
         // light.shadow.camera.near = 0.5;       // default
         // light.shadow.camera.far = 500      // default
 
-        var bodyMaterial = new THREE.MeshPhysicalMaterial({          
+        var bodyMaterial = new THREE.MeshPhysicalMaterial({
           color: 0xffffff,
           side: THREE.DoubleSide,
           metalness: 0.6,
