@@ -27,19 +27,17 @@
             </button>
           
             <div id="ar-prompt">
-              <img src="../assets/koltukgaleri/hand.png">
+              <img src="assets/koltukgaleri/hand.png">
             </div>
           
             <div class="slider">
               <div class="slides">
                 <button class="slide selected" onclick="switchSrc(this, 'longsofa')" style="background-image: url('assets/koltukgaleri/longsofa.PNG');">
           
-                </button><button class="slide" onclick="switchSrc(this, 'Lkoltuk')" style="background-image: url('assets/koltukgaleri/longsofa.PNG');">
+                </button><button class="slide" onclick="switchSrc(this, 'Lkoltuk')" style="background-image: url('assets/koltukgaleri/Lkoltuk.PNG');">
           
-                </button><button class="slide" onclick="switchSrc(this, 'singlecoach')" style="background-image: url('assets/koltukgaleri/singlecoach.PNG');">
-                
-                // </button><button class="slide" onclick="switchSrc(this, 'ToyTrain')" style="background-image: url('../assets/ShopifyModels/ToyTrain.png');">      
-                // </button><button class="slide" onclick="switchSrc(this, 'Canoe')" style="background-image: url('../assets/ShopifyModels/Canoe.png');">    
+                </button><button class="slide" onclick="switchSrc(this, 'singlecoach')" style="background-image: url('assets/koltukgaleri/singlecoach.PNG');">              
+                   
               </button></div>
             </div>
           </model-viewer>
@@ -48,7 +46,7 @@
             const modelViewer = document.querySelector("model-viewer");
           
             window.switchSrc = (element, name) => {
-              const base = "/assets/koltukgaleri/" + name;
+              const base = "assets/koltukgaleri/" + name;
               modelViewer.src = base + '.glb';
               modelViewer.poster = base + '.png';
               const slides = document.querySelectorAll(".slide");
