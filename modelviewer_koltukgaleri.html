@@ -40,8 +40,8 @@
         camera-orbit="auto auto auto"
         alt="A 3D model carousel">
   
-            <button slot="ar-button" style="background-color: white; border-radius: 4px; border: none; position: absolute; top: 16px; right: 16px; ">
-              View in your space
+            <button slot="ar-button" id="ar-button">
+            View in your space
             </button>
           
             <div id="ar-prompt">
@@ -168,13 +168,13 @@
             .slide {
               scroll-snap-align: start;
               flex-shrink: 0;
-              width: 40px;
-              height: 40px;
+              width: 35px;
+              height: 35px;
               background-size: contain;
               background-repeat: no-repeat;
               background-position: center;
               background-color: #fff;
-              margin-left: 20px;
+              margin-left: 5px;
               margin-right: 5px;
               border-radius: 5px;
               border: none;
