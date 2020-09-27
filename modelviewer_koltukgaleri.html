@@ -31,7 +31,8 @@
     </head>
     
     <body>
-        <model-viewer src="assets/koltukgaleri/longsofa.glb" 
+        <model-viewer src="assets/koltukgaleri/longsofa.glb"
+        ios-src="assets\koltukgaleri\longsofa.usdz" 
         poster="assets/koltukgaleri/longsofa.PNG" 
         shadow-intensity="1" 
         ar       
@@ -65,6 +66,7 @@
             window.switchSrc = (element, name) => {
               const base = "assets/koltukgaleri/" + name;
               modelViewer.src = base + '.glb';
+              modelViewer.ios-src = base + '.usdz';
               modelViewer.poster = base + '.png';
               const slides = document.querySelectorAll(".slide");
               slides.forEach((element) => {element.classList.remove("selected");});
