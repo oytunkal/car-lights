@@ -62,118 +62,185 @@
         color: #000;
         border-radius: 10px;
       }
+      .not-visible {
+        opacity: 0;
+      }
+      #loaderIndicator {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+      }
+      .lds-spinner {
+        color: official;
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+      }
+      .lds-spinner div {
+        transform-origin: 40px 40px;
+        animation: lds-spinner 1.2s linear infinite;
+      }
+      .lds-spinner div:after {
+        content: " ";
+        display: block;
+        position: absolute;
+        top: 3px;
+        left: 37px;
+        width: 6px;
+        height: 18px;
+        border-radius: 20%;
+        background: #fff;
+      }
+      .lds-spinner div:nth-child(1) {
+        transform: rotate(0deg);
+        animation-delay: -1.1s;
+      }
+      .lds-spinner div:nth-child(2) {
+        transform: rotate(30deg);
+        animation-delay: -1s;
+      }
+      .lds-spinner div:nth-child(3) {
+        transform: rotate(60deg);
+        animation-delay: -0.9s;
+      }
+      .lds-spinner div:nth-child(4) {
+        transform: rotate(90deg);
+        animation-delay: -0.8s;
+      }
+      .lds-spinner div:nth-child(5) {
+        transform: rotate(120deg);
+        animation-delay: -0.7s;
+      }
+      .lds-spinner div:nth-child(6) {
+        transform: rotate(150deg);
+        animation-delay: -0.6s;
+      }
+      .lds-spinner div:nth-child(7) {
+        transform: rotate(180deg);
+        animation-delay: -0.5s;
+      }
+      .lds-spinner div:nth-child(8) {
+        transform: rotate(210deg);
+        animation-delay: -0.4s;
+      }
+      .lds-spinner div:nth-child(9) {
+        transform: rotate(240deg);
+        animation-delay: -0.3s;
+      }
+      .lds-spinner div:nth-child(10) {
+        transform: rotate(270deg);
+        animation-delay: -0.2s;
+      }
+      .lds-spinner div:nth-child(11) {
+        transform: rotate(300deg);
+        animation-delay: -0.1s;
+      }
+      .lds-spinner div:nth-child(12) {
+        transform: rotate(330deg);
+        animation-delay: 0s;
+      }
+      @keyframes lds-spinner {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
     </style>
+    <script>
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        var constraints = {
+          video: {
+            facingMode: "environment",
+          },
+        };
+
+        navigator.mediaDevices
+          .getUserMedia(constraints)
+          .then(function (stream) {
+            // apply the stream to the video element used in the texture
+            video.srcObject = stream;
+            video.onloadedmetadata = function (e) {
+              video.play();
+            };
+          })
+          .catch(function (error) {
+            console.error("Unable to access the camera/webcam.", error);
+          });
+      } else {
+        console.error("MediaDevices interface not available.");
+      }
+    </script>
   </head>
-  <script>
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      var constraints = {
-        video: {
-          facingMode: "environment",
-        },
-      };
 
-      navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then(function (stream) {
-          // apply the stream to the video element used in the texture
-          video.srcObject = stream;
-          video.onloadedmetadata = function (e) {
-            video.play();
-          };
-        })
-        .catch(function (error) {
-          console.error("Unable to access the camera/webcam.", error);
-        });
-    } else {
-      console.error("MediaDevices interface not available.");
-    }
-  </script>
-  <script>
-    var infoVisible,
-      engineRunning = false;
-
-    function toggle(e) {
-      e.preventDefault();
-      if (infoVisible) {
-        document.getElementById("infoWrapper").style.display = "none";
-        infoVisible = false;
-      } else {
-        document.getElementById("infoWrapper").style.display = "inline-block";
-        infoVisible = true;
-      }
-    }
-    function toggleEngine(e) {
-      // e.preventDefault();
-      if (engineRunning) {
-        document.getElementById("audio").pause();
-        engineRunning = false;
-      } else {
-        document.getElementById("audio").play();
-        engineRunning = true;
-      }
-    }
-  </script>
   <body>
-    <div class="colorPalette">
-      <div
-        class="colorIcon body-color"
-        style="background-color: black;"
-        data-color="black"
-      ></div>
-      <div
-        class="colorIcon body-color"
-        style="background-color: white;"
-        data-color="white"
-      ></div>
-      <div
-        class="colorIcon body-color"
-        style="background-color: #33363d;"
-        data-color="#33363D"
-      ></div>
-      <div
-        class="colorIcon body-color"
-        style="background-color: #aaaaaa;"
-        data-color="#AAAAAA"
-      ></div>
-      <div
-        class="colorIcon body-color"
-        style="background-color: #182f59;"
-        data-color="#182F59"
-      ></div>
-      <div
-        class="colorIcon body-color"
-        style="background-color: #bb2516;"
-        data-color="#BB2516"
-      ></div>
-    </div>
-    <div class="infoWindow">
-      <img
-        src="assets/info2.png"
-        style="width: 70px; pointer-events: auto; cursor: pointer;"
-        onclick="toggle(event);"
-        alt=""
-      />
-    </div>
-    <div id="infoWrapper">
-      <h3>Station Wagon Autos</h3>
-      <p>
-        Für weitere Informationen besuchen Sie unsere
-        <a href="https://www.youtube.com/watch?v=i1xsf254RiY" target="_blank"
-          >Website</a
-        >
-      </p>
-    </div>
-    <div id="info">
-      <div class="engineWindow">
+    <div id="elementsWrapper" class="not-visible">
+      <div class="colorPalette">
+        <div
+          class="colorIcon body-color"
+          style="background-color: black;"
+          data-color="black"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: white;"
+          data-color="white"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: #33363d;"
+          data-color="#33363D"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: #aaaaaa;"
+          data-color="#AAAAAA"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: #182f59;"
+          data-color="#182F59"
+        ></div>
+        <div
+          class="colorIcon body-color"
+          style="background-color: #bb2516;"
+          data-color="#BB2516"
+        ></div>
+      </div>
+      <div class="infoWindow">
         <img
-          src="assets/Engine_Start_Button_icon_white.png"
+          src="assets/info2.png"
           style="width: 70px; pointer-events: auto; cursor: pointer;"
-          onclick="toggleEngine(event);"
+          onclick="toggle(event);"
           alt=""
         />
       </div>
+      <div id="infoWrapper">
+        <h3>Station Wagon Autos</h3>
+        <p>
+          Für weitere Informationen besuchen Sie unsere
+          <a href="https://www.youtube.com/watch?v=i1xsf254RiY" target="_blank"
+            >Website</a
+          >
+        </p>
+      </div>
+      <div id="info">
+        <div class="engineWindow">
+          <img
+            src="assets/Engine_Start_Button_icon_white.png"
+            style="width: 70px; pointer-events: auto; cursor: pointer;"
+            onclick="toggleEngine(event);"
+            alt=""
+          />
+        </div>
+      </div>
     </div>
-
     <audio id="audio">
       <source src="assets/audi_enginestart.mp3" type="audio/mpeg" />
     </audio>
@@ -183,6 +250,22 @@
       webkit-playsinline="true"
       playsinline="true"
     ></video>
+    <div id="loaderIndicator">
+      <div class="lds-spinner">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
     <div id="container"></div>
 
     <script type="module">
@@ -305,28 +388,58 @@
         // detailsColorInput.addEventListener("input", function() {
         //   detailsMaterial.color.set(this.value);
         // });
-        var threeGLTFLoader = new GLTFLoader();
-        threeGLTFLoader.load(
-          "assets/audi_station_ladezeit_01.glb",
-          function (gltf) {
-            var carModel = gltf.scene;
-            // carModel.traverse(o => {
-            //   console.log(o.name);
-            //   // if (o.name == "Exterior_Body") o.material = bodyMaterial;
-            // });
-            carModel.getObjectByName("001_carpaint").material = bodyMaterial;
-            // carModel.getObjectByName(
-            //   "002_car_windows"
-            // ).material = glassMaterial;
-            // carModel.getObjectByName "006_front_tyres"
-            wheels.push(
-              carModel.getObjectByName("007_back_tyres"),
-              carModel.getObjectByName("006_front_tyres")
-            );
-            directionalLight.target = carModel;
-            scene.add(carModel);
-          }
-        );
+        var manager = new THREE.LoadingManager();
+        manager.onLoad = function () {
+          // document.getElementById("loaderIndicator").style.display = "none";
+
+          var fadeTargetLoader = document.getElementById("loaderIndicator");
+
+          var fadeEffect = setInterval(function () {
+            if (!fadeTargetLoader.style.opacity) {
+              fadeTargetLoader.style.opacity = 1;
+            }
+            if (fadeTargetLoader.style.opacity > 0) {
+              fadeTargetLoader.style.opacity -= 0.1;
+            } else {
+              clearInterval(fadeEffect);
+              document.getElementById("elementsWrapper").style.opacity = 1;
+            }
+          }, 100);
+        };
+
+        manager.onProgress = function (url, itemsLoaded, itemsTotal) {
+          console.log(
+            "Loading file: " +
+              url +
+              ".\nLoaded " +
+              itemsLoaded +
+              " of " +
+              itemsTotal +
+              " files."
+          );
+        };
+
+        var threeGLTFLoader = new GLTFLoader(manager);
+        threeGLTFLoader.load("assets/audi_station_ladezeit_01.glb", function (
+          gltf
+        ) {
+          var carModel = gltf.scene;
+          // carModel.traverse(o => {
+          //   console.log(o.name);
+          //   // if (o.name == "Exterior_Body") o.material = bodyMaterial;
+          // });
+          carModel.getObjectByName("001_carpaint").material = bodyMaterial;
+          // carModel.getObjectByName(
+          //   "002_car_windows"
+          // ).material = glassMaterial;
+          // carModel.getObjectByName "006_front_tyres"
+          wheels.push(
+            carModel.getObjectByName("007_back_tyres"),
+            carModel.getObjectByName("006_front_tyres")
+          );
+          directionalLight.target = carModel;
+          scene.add(carModel);
+        });
       }
 
       function render() {
@@ -345,6 +458,31 @@
         camera.updateProjectionMatrix();
 
         renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+    </script>
+    <script>
+      var infoVisible,
+        engineRunning = false;
+
+      function toggle(e) {
+        e.preventDefault();
+        if (infoVisible) {
+          document.getElementById("infoWrapper").style.display = "none";
+          infoVisible = false;
+        } else {
+          document.getElementById("infoWrapper").style.display = "inline-block";
+          infoVisible = true;
+        }
+      }
+      function toggleEngine(e) {
+        // e.preventDefault();
+        if (engineRunning) {
+          document.getElementById("audio").pause();
+          engineRunning = false;
+        } else {
+          document.getElementById("audio").play();
+          engineRunning = true;
+        }
       }
     </script>
   </body>
